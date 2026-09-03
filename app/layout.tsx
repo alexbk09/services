@@ -5,7 +5,6 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'agenda. — Gestión de citas para profesionales',
   description: 'Gestiona tus reservas, clientes y pagos desde un solo lugar.',
-  generator: 'v0.app',
   icons: {
     icon: [
       {
