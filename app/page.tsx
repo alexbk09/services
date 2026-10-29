@@ -1,9 +1,28 @@
 'use client'
 
-import { useState } from 'react'
-import { MarketingLanding, Workspace } from '@/components/marketing-landing'
+import { useEffect, useState } from 'react'
+import { MarketingLanding, MockAuth, Workspace, type DemoUser } from '@/components/marketing-landing'
 
 export default function Home() {
-  const [view, setView] = useState<'landing' | 'workspace'>('landing')
-  return view === 'landing' ? <MarketingLanding onOpenApp={() => setView('workspace')} /> : <Workspace onHome={() => setView('landing')} />
+  const [user, setUser] = useState<DemoUser | null>(null)
+  const [screen, setScreen] = useState<'landing' | 'auth'>('landing')
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem('agenda-demo-user')
+    if (saved) setUser(JSON.parse(saved))
+  }, [])
+
+  const login = (nextUser: DemoUser) => {
+    window.localStorage.setItem('agenda-demo-user', JSON.stringify(nextUser))
+    setUser(nextUser)
+  }
+  const logout = () => {
+    window.localStorage.removeItem('agenda-demo-user')
+    setUser(null)
+    setScreen('landing')
+  }
+
+  if (user) return <Workspace user={user} onLogout={logout} />
+  if (screen === 'auth') return <MockAuth onLogin={login} onBack={() => setScreen('landing')} />
+  return <MarketingLanding onOpenApp={() => setScreen('auth')} />
 }
